@@ -2,10 +2,13 @@ package pages;
 
 import helpers.select.DropDownHelper;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import java.sql.Struct;
 
 public class BankManagerPage {
     private WebDriver driver;
@@ -32,14 +35,26 @@ public class BankManagerPage {
     private WebElement processBtn;
     @FindBy(xpath = "//input[@placeholder='Search Customer']")
     private WebElement searchCustomerBox;
+    @FindBy(xpath = "//button[@class='btn home']")
+    private WebElement homeButton;
 
-    public BankManagerPage(WebDriver driver){
+
+    public BankManagerPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
 
+    public void acceptAlert() {
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
 
-    public void enterCustomerDetails(String fName, String lName, String code){
+    private void clickOnAddCustomer() {
+        addCustomerButton.click();
+    }
+
+    public void enterCustomerDetails(String fName, String lName, String code) {
+        clickOnAddCustomer();
         firstName.clear();
         firstName.sendKeys(fName);
         lastName.clear();
@@ -47,35 +62,51 @@ public class BankManagerPage {
         postalCode.clear();
         postalCode.sendKeys(code);
         addCustomerBtn.click();
+        acceptAlert();
     }
 
-    public void clickOpenAccountButton(){
+    private void clickOpenAccount() {
         openAccountButton.click();
     }
 
-    public void openAccount(String name, String currency){
-        new DropDownHelper(driver).selectUsingVisibleText(customerDropdown,name);
+    public void openAccount(String name, String currency) {
+        clickOpenAccount();
+        new DropDownHelper(driver).selectUsingVisibleText(customerDropdown, name);
         new DropDownHelper(driver).selectUsingVisibleText(currencyDropdown, currency);
         processBtn.click();
+        acceptAlert();
     }
 
-    public  void clickOnOpenAccountBtn(){
-        openAccountButton.click();
-    }
-
-    public void searchCustomer(String name){
+    public void searchCustomer(String name) {
         customersButton.click();
         searchCustomerBox.clear();
         searchCustomerBox.sendKeys(name);
     }
 
-
-    public void clickOnAddCustomer(){
-        addCustomerButton.click();
+    public boolean validateCustomerName(String fname, String lname) {
+        String firstname = fname;
+        String lastname = lname;
+        String xpathPartOne = " //td[contains(text(),'";
+        String xpathPartTwo = "')]";
+        String fullXpath = xpathPartOne + firstname + xpathPartTwo;
+        String xpathLastnameCell = xpathPartOne + lastname + xpathPartTwo;
+        WebElement fnameCell = driver.findElement(By.xpath(fullXpath));
+        WebElement lnameCell = driver.findElement(By.xpath(xpathLastnameCell));
+        if (fnameCell.getText().equals(fname) || lnameCell.getText().equals(lname)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void acceptAlert(){
-        Alert alert = driver.switchTo().alert();
-        alert.accept();
+    public void clickOnHomeButton(){
+        homeButton.click();
     }
+
+    public HomePage homePage(){
+        homeButton.click();
+        return new HomePage(driver);
+    }
+
+
 }

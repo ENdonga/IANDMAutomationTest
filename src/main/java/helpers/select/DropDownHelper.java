@@ -25,4 +25,10 @@ public class DropDownHelper {
         select = new Select(element);
         select.selectByIndex(index);
     }
+
+    public String getSelectedOption(WebElement element){
+        select = new Select(element);
+        WebElement option = select.getFirstSelectedOption();
+        return option.getText();
+    }
 }

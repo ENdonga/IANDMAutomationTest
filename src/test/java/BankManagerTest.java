@@ -9,37 +9,35 @@ public class BankManagerTest extends TestBase {
 
     HomePage homePage;
     BankManagerPage bankManagerPage;
-    @Test
+    @Test(priority = 1)
     public void test_BankManagerLogin(){
         getApplicationURL(PropertyReader.configReader.getURL());
         homePage = new HomePage(driver);
-        homePage.clickOnBankManagerLoginBtn();
+        bankManagerPage=homePage.clickOnBankManagerLoginBtn();
     }
 
-    @Test
+    @Test(priority = 2)
     public void test_VerifyAddCustomerDetails(){
-        getApplicationURL(PropertyReader.configReader.getURL());
-        homePage = new HomePage(driver);
         bankManagerPage  = homePage.clickOnBankManagerLoginBtn();
-        bankManagerPage.clickOnAddCustomer();
         bankManagerPage.enterCustomerDetails("Edwin", "Ndonga", "35272");
     }
-    @Test
+    @Test(priority = 3)
     public void test_VerifyOpenAccount(){
-        getApplicationURL(PropertyReader.configReader.getURL());
-        homePage = new HomePage(driver);
-        bankManagerPage  = homePage.clickOnBankManagerLoginBtn();
-        bankManagerPage.clickOnOpenAccountBtn();
-        bankManagerPage.openAccount("Harry Potter", "Pound");
-        bankManagerPage.acceptAlert();
+//        bankManagerPage  = homePage.clickOnBankManagerLoginBtn();
+        bankManagerPage.openAccount("Edwin Ndonga", "Pound");
     }
 
-    @Test
+    @Test(priority = 4)
     public void test_VerifySearchCustomer(){
-        getApplicationURL(PropertyReader.configReader.getURL());
-        homePage = new HomePage(driver);
-        bankManagerPage  = homePage.clickOnBankManagerLoginBtn();
-        bankManagerPage.searchCustomer("test");
+//        bankManagerPage  = homePage.clickOnBankManagerLoginBtn();
+        bankManagerPage.searchCustomer("Edwin");
+        boolean status = bankManagerPage.validateCustomerName("Edwin", "Ndonga");
+        AssertionsHelper.updateTestStatus(status);
+    }
+
+    @Test(priority = 5)
+    public void test_NavigateBackToHome(){
+        bankManagerPage.homePage();
     }
 
 }

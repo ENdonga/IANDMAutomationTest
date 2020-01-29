@@ -27,4 +27,15 @@ public class AssertionsHelper {
             fail();
         }
     }
+
+    public static void verifyText(String s1, String s2){
+        boolean match = s1.equals(s2);
+        if(match){
+            Assert.assertEquals(s1, s2);
+            updateTestStatus(true);
+        } else {
+            Assert.assertEquals(s1, s2);
+            updateTestStatus(false);
+        }
+    }
 }

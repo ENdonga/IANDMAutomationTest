@@ -7,7 +7,9 @@ import helpers.wait.WaitHelper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import utils.PropertyReader;
 
@@ -16,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 public class TestBase {
     public WebDriver driver;
 
-    public WebDriver getBrowserObject(BrowserType browserType){
+    public WebDriver getBrowserObject(BrowserType browserType) {
         try {
-            switch (browserType){
+            switch (browserType) {
                 case Chrome:
                     // Create an object of Chrome browser
                     ChromeBrowser chrome = ChromeBrowser.class.newInstance();
@@ -32,28 +34,31 @@ public class TestBase {
                 default:
                     throw new Exception("Driver not found " + browserType.name());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error message: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
-    public void setupDriver(BrowserType browserType){
+    public void setupDriver(BrowserType browserType) {
         driver = getBrowserObject(browserType);
         WaitHelper wait = new WaitHelper(driver);
         wait.setImplicitWait(PropertyReader.configReader.getImplicitWait(), TimeUnit.SECONDS);
         wait.setPageLoadTime(PropertyReader.configReader.getPageLoadTime(), TimeUnit.SECONDS);
         driver.manage().window().maximize();
     }
-    public void getApplicationURL(String URL){
+
+    public void getApplicationURL(String URL) {
         driver.get(URL);
     }
-    @BeforeTest
+
+    @BeforeSuite
     public void beforeTest() {
         setupDriver(PropertyReader.configReader.getBrowserType());
     }
-    @AfterTest
+
+    @AfterSuite
     public void afterTest() {
         if (driver != null) {
             driver.quit();
